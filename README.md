@@ -2,7 +2,8 @@
 Python Implementation of the [K-means Clustering](https://en.wikipedia.org/wiki/K-means_clustering) algorithm. Basically a labels the training data (the input data) as 1 of k labels. Labels are determined on how close the data sample is to the centroid representing the label. Centroids are updated to shrink the distance to other data samples. Idea is to label points grouped as a label. Number of Ks determine how general the group is.
 
 ### Usage:
-To run standalone test: ```python3  K-means.py```. Run a simple test run.
+To run standalone test: ```python3  K-means.py``` to run a simple test run.
+
 Otherwise, ```import Kmeans as km ..... result = km.kmeans(training_data)``` to get a tuple of (training_data,centroids).
 
 ### TODO:
