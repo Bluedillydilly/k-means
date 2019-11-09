@@ -13,6 +13,11 @@ def kmeans(training, TUNE_K = 0, PRINT = 0):
     2. Assign each point of input to K.
     3. Update centroid with average of points within centroid range.
     4. repear 2 and 3 until no input point is reassigned.
+
+    return:
+        centroids - the array representing the k many centroids.
+                A data sample belongs to whatever centroid it is closest to,
+                and takes that centroid's label (i.e. 0,1,2,...,k).
     """
     dimensions = training[0].shape
     K_num = 2 # number of centroids
@@ -59,7 +64,7 @@ def kmeans(training, TUNE_K = 0, PRINT = 0):
         # OUTPUT CENTROIDS
         print("Centroids",centroids)
         print("Training data",training)
-    return (training,centroids)
+    return centroids
             
 
 def dists(point, centroids):

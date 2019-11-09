@@ -4,7 +4,7 @@ Python Implementation of the [K-means Clustering](https://en.wikipedia.org/wiki/
 ### Usage:
 To run standalone test: ```python3  K-means.py``` to run a simple test run.
 
-Otherwise, ```import Kmeans as km ..... result = km.kmeans(training_data)``` to get a tuple of (training_data,centroids).
+Otherwise, ```import Kmeans as km ..... result = km.kmeans(training_data)``` to get the array of values representing the k many centroids; ```centroids```.
 
 ### TODO:
 Implement the elbow method to automatically determine the best K; number of clusters.
