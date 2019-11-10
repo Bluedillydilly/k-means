@@ -6,7 +6,7 @@ from copy import deepcopy
 
 THRESHOLD = 0
 
-def kmeans(training, TUNE_K = 0, PRINT = 0):
+def kmeans(training, K = 2, PRINT = 0):
     """
 
     1. Choose K. Choose location of centroid.
@@ -20,7 +20,7 @@ def kmeans(training, TUNE_K = 0, PRINT = 0):
                 and takes that centroid's label (i.e. 0,1,2,...,k).
     """
     dimensions = training[0].shape
-    K_num = 2 # number of centroids
+    K_num = K # number of centroids
     K_dim = (K_num,) + dimensions # dimensions of K
     centroids = np.random.random(K_dim) # values of K
     centroids *= np.max(training, axis=0)
@@ -58,13 +58,15 @@ def kmeans(training, TUNE_K = 0, PRINT = 0):
         # UPDATE CENTROIDS with averages
         for k in range(K_num):
             kPoints = [training[i] for i in range(len(training)) if training_labels[i] == k]
+            if len(kPoints) == 0:
+                continue
             kMean = np.mean(kPoints)
             centroids[k] = kMean
     if PRINT:
         # OUTPUT CENTROIDS
         print("Centroids",centroids)
         print("Training data",training)
-    return centroids
+    return (centroids, training_labels)
             
 
 def dists(point, centroids):
@@ -77,8 +79,54 @@ def dist(point, centroid):
     return np.linalg.norm(point-centroid)
 
 
+def kmeansTuned(training, PRINT=0):
+    """
+    Runs kmeans several times and finds the best K value (number of centroids to use).
+    """
+    # run kmeans with different k
+    WCSSk = []
+    for k in range(1,11):
+        if PRINT:
+            print("K: ",k)
+
+        iterations = 15
+        for i in range(iterations):
+            clusterI = []
+            cent, labels = kmeans(training, K=k)
+            clusterI.append(calcWCSS(training, labels, cent))
+        WCSSk.append(sum(clusterI)/iterations)
+
+    if PRINT:
+        print("WCCS:",WCSSk)
+    candidates = [ WCSSk[i-1]-2*WCSSk[i]+WCSSk[i+1] for i in range(1,len(WCSSk)-1)]
+    if PRINT:
+        print("Candidates: ", candidates)
+    # gets the k of the lowest WCSS
+    bestK = np.argmax(np.array(candidates)) + 1 + 1
+    return bestK
+
+def calcWCSS(T, labels, C):
+    """
+    parameters:
+        T - training data; input data.
+        labels - labels for each training sample. ith label corresponds to ith training sample
+        C - the k centroids
+
+    """
+    WCSSsum = []
+    # calculates the WCSS per cluster.
+    for i in range(len(C)):
+        WCSSsum.append(sum([dist(T[j], C[i]) for j in range(len(T)) if labels[j]==i]))
+    # total WCSS of all cluster
+    totalWCSS = np.sum(WCSSsum)
+    return totalWCSS
+
+
 
 if __name__ == "__main__":
-    test = np.array([[1,1],[2,2],[9,10],[11,10]], dtype=float)
-    maxValue = np.max(test)
-    kmeans(test, PRINT=1)
+    test = np.array([[0,1],[3,2],[60,63],[54,57],[102,98],[99,100]], dtype=float)
+    print(kmeans(test))
+
+    bestK =kmeansTuned(test) 
+    print("Best K to use:", bestK)
+    print(kmeans(test, K=bestK))
